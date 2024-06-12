@@ -11,8 +11,13 @@
 #include "freertos/task.h"
 #include "esp_system.h"
 #include "driver/i2c_master.h"
+#include "nvs_flash.h"
+#include "esp_event.h"
+#include "esp_netif.h"
+
 
 #include "i2c_sgp30.h"
+#include "wifi.h"
 
 
 #define SCL_IO_PIN (CONFIG_I2C_MASTER_SCL) // default is 4
@@ -79,6 +84,12 @@ void s_app_i2c_bus_deinit(void){
 void app_main(void)
 {
     vTaskDelay(2000 / portTICK_PERIOD_MS);
+
+    ESP_ERROR_CHECK(nvs_flash_init());
+    ESP_ERROR_CHECK(esp_netif_init());
+    ESP_ERROR_CHECK(esp_event_loop_create_default());
+
+    app_wifi_connect();
     
     if (ESP_OK != s_app_i2c_bus_init(&g_i2c_dev)){
         printf("i2c bus init failed\n");
