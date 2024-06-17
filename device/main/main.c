@@ -18,6 +18,7 @@
 
 #include "i2c_sgp30.h"
 #include "wifi.h"
+#include "app_tcp_connect.h"
 
 
 #define SCL_IO_PIN (CONFIG_I2C_MASTER_SCL) // default is 4
@@ -85,11 +86,13 @@ void app_main(void)
 {
     vTaskDelay(2000 / portTICK_PERIOD_MS);
 
+        // todo: 不要用下面的检测，要设置对应的状态灯。
     ESP_ERROR_CHECK(nvs_flash_init());
     ESP_ERROR_CHECK(esp_netif_init());
     ESP_ERROR_CHECK(esp_event_loop_create_default());
+    ESP_ERROR_CHECK(app_wifi_connect());
 
-    app_wifi_connect();
+    app_tcp_connect_init();
     
     if (ESP_OK != s_app_i2c_bus_init(&g_i2c_dev)){
         printf("i2c bus init failed\n");
