@@ -87,12 +87,12 @@ void app_main(void)
     vTaskDelay(2000 / portTICK_PERIOD_MS);
 
         // todo: 不要用下面的检测，要设置对应的状态灯。
-    ESP_ERROR_CHECK(nvs_flash_init());
-    ESP_ERROR_CHECK(esp_netif_init());
-    ESP_ERROR_CHECK(esp_event_loop_create_default());
-    ESP_ERROR_CHECK(app_wifi_connect());
+//    ESP_ERROR_CHECK(nvs_flash_init());
+ //   ESP_ERROR_CHECK(esp_netif_init());
+ //   ESP_ERROR_CHECK(esp_event_loop_create_default());
+//    ESP_ERROR_CHECK(app_wifi_connect());
 
-    app_tcp_connect_init();
+//    app_tcp_connect_init();
     
     if (ESP_OK != s_app_i2c_bus_init(&g_i2c_dev)){
         printf("i2c bus init failed\n");
@@ -130,12 +130,13 @@ void app_main(void)
     printf("tvoc_base: %d, co2_base: %dppm\n", base_tvoc, base_co2eq);
 
     uint16_t co2eq, tvoc;
+	static int i = 0;
     while(1){
         i2c_sgp30_measure_air_quality(sgp30_handle, &co2eq, &tvoc);
-        printf("tvoc: %dppb, co2: %dppm\n", tvoc, co2eq);
+        printf("id=%d, tvoc: %d ppb, co2: %d ppm\n", i++, tvoc, co2eq);
 
-        i2c_sgp30_measure_raw_signals(sgp30_handle, &h2_sig, &eth_sig);
-        printf("RAW data: H2_signal: %d, Ethanol_signal: %d\n", h2_sig, eth_sig);
+//        i2c_sgp30_measure_raw_signals(sgp30_handle, &h2_sig, &eth_sig);
+ //       printf("RAW data: H2_signal: %d, Ethanol_signal: %d\n", h2_sig, eth_sig);
         vTaskDelay(1000 / portTICK_PERIOD_MS);
     }
 }
